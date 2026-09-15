@@ -9,12 +9,14 @@ Movement::Movement(Display *display)
     leftMotor = new AccelStepper(AccelStepper::DRIVER, LEFT_STEP_PIN, LEFT_DIR_PIN);
     leftMotor->setEnablePin(LEFT_ENABLE_PIN);
     leftMotor->setMaxSpeed(moveSpeedSteps);
-    leftMotor->setPinsInverted(true);
+    //leftMotor->setPinsInverted(true);
+    leftMotor->setPinsInverted(false);
     leftMotor->disableOutputs();
 
     rightMotor = new AccelStepper(AccelStepper::DRIVER, RIGHT_STEP_PIN, RIGHT_DIR_PIN);
     rightMotor->setEnablePin(RIGHT_ENABLE_PIN);
     rightMotor->setMaxSpeed(moveSpeedSteps);
+    rightMotor->setPinsInverted(true);  // normally this one doesnt exist, but the right motor is mounted upside down, so we need to invert it.
     rightMotor->disableOutputs();
 
     topDistance = -1;
