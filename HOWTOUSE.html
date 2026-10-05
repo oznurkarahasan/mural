@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mural Wall Plotter — How To Use</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg-card: #161b22;
+      --bg-code: #0d1117;
+      --bg-table-alt: #1c2230;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --accent-green: #3fb950;
+      --accent-orange: #d29922;
+      --accent-red: #f85149;
+      --accent-purple: #bc8cff;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --text-code: #79c0ff;
+      --shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    nav#sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 260px;
+      height: 100vh;
+      background: var(--bg-card);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 24px 0;
+      z-index: 100;
+    }
+
+    nav#sidebar .logo {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    nav#sidebar .logo h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+    }
+
+    nav#sidebar .logo p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    nav#sidebar ul {
+      list-style: none;
+      padding: 0 12px;
+    }
+
+    nav#sidebar ul li a {
+      display: block;
+      padding: 7px 12px;
+      border-radius: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 400;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    nav#sidebar ul li a:hover,
+    nav#sidebar ul li a.active {
+      background: rgba(88,166,255,0.1);
+      color: var(--accent);
+    }
+
+    nav#sidebar ul li a .num {
+      display: inline-block;
+      width: 20px;
+      font-weight: 600;
+      color: var(--accent);
+      opacity: 0.7;
+    }
+
+    /* ── Main content ── */
+    main {
+      margin-left: 260px;
+      padding: 48px 56px;
+      max-width: 960px;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #1a2540 0%, #0d1829 50%, #161b22 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 40px;
+      margin-bottom: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(88,166,255,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .hero h1 {
+      font-size: 32px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #58a6ff, #79c0ff, #bc8cff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+
+    .hero .subtitle {
+      color: var(--text-muted);
+      font-size: 15px;
+      max-width: 560px;
+      line-height: 1.6;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .badge {
+      background: rgba(88,166,255,0.12);
+      border: 1px solid rgba(88,166,255,0.25);
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    /* ── Sections ── */
+    section {
+      margin-bottom: 60px;
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h2 .section-num {
+      background: linear-gradient(135deg, var(--accent), var(--accent-purple));
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      width: 26px; height: 26px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 28px 0 12px;
+    }
+
+    h3.phase-title {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 10px 16px;
+      margin: 24px 0 16px;
+      font-size: 15px;
+    }
+
+    p { margin-bottom: 12px; color: var(--text); }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    strong { color: var(--text); font-weight: 600; }
+
+    /* ── Tables ── */
+    .table-wrap { overflow-x: auto; margin: 16px 0 24px; border-radius: 10px; border: 1px solid var(--border); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    thead tr {
+      background: rgba(88,166,255,0.08);
+    }
+
+    thead th {
+      padding: 11px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--accent);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(48,54,61,0.6);
+      transition: background 0.12s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+
+    tbody tr:hover { background: rgba(88,166,255,0.04); }
+
+    tbody tr:nth-child(even) { background: var(--bg-table-alt); }
+    tbody tr:nth-child(even):hover { background: rgba(88,166,255,0.06); }
+
+    td {
+      padding: 10px 16px;
+      color: var(--text);
+    }
+
+    td code, th code {
+      background: rgba(88,166,255,0.1);
+      color: var(--text-code);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+
+    td strong { color: var(--accent); }
+
+    /* ── Code blocks ── */
+    pre {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 24px;
+      overflow-x: auto;
+      margin: 16px 0;
+      position: relative;
+    }
+
+    pre code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #e6edf3;
+      line-height: 1.7;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--text-code);
+      background: rgba(88,166,255,0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    pre code { background: none; padding: 0; color: #e6edf3; }
+
+    /* ── Callouts ── */
+    .callout {
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 16px 0;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .callout .icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+    .callout.tip {
+      background: rgba(63,185,80,0.08);
+      border: 1px solid rgba(63,185,80,0.25);
+      color: #a8dabc;
+    }
+
+    .callout.warning {
+      background: rgba(248,81,73,0.08);
+      border: 1px solid rgba(248,81,73,0.25);
+      color: #ffa3a0;
+    }
+
+    .callout.info {
+      background: rgba(88,166,255,0.08);
+      border: 1px solid rgba(88,166,255,0.25);
+      color: #b0d0ff;
+    }
+
+    /* ── Pin summary card ── */
+    .pin-summary {
+      background: #0a0f1a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 16px 0;
+    }
+
+    .pin-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(48,54,61,0.4);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+    }
+
+    .pin-row:last-child { border-bottom: none; }
+
+    .pin-num {
+      color: var(--accent);
+      font-weight: 600;
+      min-width: 70px;
+    }
+
+    .pin-arrow { color: var(--text-muted); }
+
+    .pin-label { color: var(--text); }
+
+    .pin-new {
+      background: rgba(63,185,80,0.15);
+      color: var(--accent-green);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: 'Inter', sans-serif;
+      margin-left: auto;
+    }
+
+    /* ── Phase steps ── */
+    ol, ul {
+      padding-left: 24px;
+      margin: 12px 0 16px;
+    }
+
+    li { margin-bottom: 6px; color: var(--text); }
+
+    /* ── Wiring diagram ── */
+    .wiring-box {
+      background: #0a0f1a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.8;
+      color: #79c0ff;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* ── Troubleshoot items ── */
+    .trouble-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+    }
+
+    .trouble-item h4 {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .trouble-item h4::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent-orange);
+      flex-shrink: 0;
+    }
+
+    .trouble-item ul { margin: 0; }
+    .trouble-item li { color: var(--text-muted); font-size: 13.5px; }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      margin-top: 40px;
+      color: var(--text-muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      nav#sidebar { display: none; }
+      main { margin-left: 0; padding: 24px 20px; }
+    }
+
+    /* ── Scroll active highlight ── */
+    section { scroll-margin-top: 24px; }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav id="sidebar">
+  <div class="logo">
+    <h2>🖊 Mural</h2>
+    <p>Wall Plotter Documentation</p>
+  </div>
+  <ul>
+    <li><a href="#s1"><span class="num">1</span> Hardware Overview</a></li>
+    <li><a href="#s2"><span class="num">2</span> Pin Assignments</a></li>
+    <li><a href="#s3"><span class="num">3</span> Wiring Diagram</a></li>
+    <li><a href="#s4"><span class="num">4</span> Flashing Firmware</a></li>
+    <li><a href="#s5"><span class="num">5</span> Wi-Fi Setup</a></li>
+    <li><a href="#s6"><span class="num">6</span> Web Interface</a></li>
+    <li><a href="#s7"><span class="num">7</span> Preparing SVG</a></li>
+    <li><a href="#s8"><span class="num">8</span> Phases Reference</a></li>
+    <li><a href="#s9"><span class="num">9</span> Tools Modal</a></li>
+    <li><a href="#s10"><span class="num">10</span> E-Steps Calibration</a></li>
+    <li><a href="#s11"><span class="num">11</span> Troubleshooting</a></li>
+  </ul>
+</nav>
+
+<!-- Main -->
+<main>
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>Mural Wall Plotter</h1>
+    <p class="subtitle">A wall-hanging drawing robot controlled via a web browser. Mural hangs from two nails on a wall and draws SVG images using a pen and two stepper motors that control belt lengths.</p>
+    <div class="badge-row">
+      <span class="badge">ESP32</span>
+      <span class="badge">PlatformIO</span>
+      <span class="badge">WS2812B LED</span>
+      <span class="badge">TMC2209 Drivers</span>
+      <span class="badge">LittleFS</span>
+      <span class="badge">AsyncWebServer</span>
+    </div>
+  </div>
+
+  <!-- 1. Hardware Overview -->
+  <section id="s1">
+    <h2><span class="section-num">1</span> Hardware Overview</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Component</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>ESP32 NodeMCU ESP-WROOM-32 (30-pin)</td><td>Main microcontroller</td></tr>
+          <tr><td>2× NEMA 17 Pancake Stepper Motors</td><td>Drive the belts</td></tr>
+          <tr><td>2× TMC2209 Stepper Motor Drivers</td><td>Control the steppers (1/8 microstepping)</td></tr>
+          <tr><td>MG90S Metal Gear Servo</td><td>Raises and lowers the pen</td></tr>
+          <tr><td>SSD1306 OLED Display (128×64, I²C)</td><td>Shows status and drawing progress</td></tr>
+          <tr><td>GT2 Timing Belts + 20-tooth Pulleys</td><td>Connect motors to the gondola</td></tr>
+          <tr><td>USB-C PD power supply (30W+, 12V)</td><td>Powers the whole system</td></tr>
+          <tr><td>LM2596 Step-down Regulator</td><td>Converts 12V → 5V for ESP32</td></tr>
+          <tr><td><strong>Push Button</strong></td><td>Connected to GPIO 32 — <em>new</em></td></tr>
+          <tr><td><strong>WS2812B LED (×1)</strong></td><td>Connected to GPIO 4 — <em>new</em></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 2. Pin Assignments -->
+  <section id="s2">
+    <h2><span class="section-num">2</span> Pin Assignments</h2>
+
+    <h3>Stepper Motors</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Signal</th><th>GPIO</th><th>Motor</th></tr></thead>
+        <tbody>
+          <tr><td>STEP</td><td><strong>13</strong></td><td>Left motor</td></tr>
+          <tr><td>DIR</td><td><strong>12</strong></td><td>Left motor</td></tr>
+          <tr><td>ENABLE</td><td><strong>14</strong></td><td>Left motor</td></tr>
+          <tr><td>STEP</td><td><strong>27</strong></td><td>Right motor</td></tr>
+          <tr><td>DIR</td><td><strong>26</strong></td><td>Right motor</td></tr>
+          <tr><td>ENABLE</td><td><strong>25</strong></td><td>Right motor</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout info"><span class="icon">ℹ️</span> Microstepping: <strong>1/8</strong> → 1600 steps per full motor rotation.</div>
+
+    <h3>Servo (Pen)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Signal</th><th>GPIO</th></tr></thead>
+        <tbody>
+          <tr><td>PWM Signal</td><td><strong>2</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout info"><span class="icon">ℹ️</span> Defaults to 90° at startup (pen up position).</div>
+
+    <h3>OLED Display (I²C)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Signal</th><th>GPIO</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr><td>SDA</td><td><strong>21</strong></td><td>Arduino/ESP32 Wire default</td></tr>
+          <tr><td>SCL</td><td><strong>22</strong></td><td>Arduino/ESP32 Wire default</td></tr>
+          <tr><td>I²C Address</td><td><code>0x3C</code></td><td>128×64 SSD1306</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Button <span style="color:var(--accent-green);font-size:12px;font-weight:600;margin-left:6px;">NEW</span></h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Signal</th><th>GPIO</th><th>Wiring</th></tr></thead>
+        <tbody>
+          <tr><td>Button input</td><td><strong>32</strong></td><td>One leg → GPIO 32, other leg → GND</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout tip"><span class="icon">✅</span> Use <code>INPUT_PULLUP</code> in code — no external resistor needed.</div>
+
+    <h3>WS2812B LED <span style="color:var(--accent-green);font-size:12px;font-weight:600;margin-left:6px;">NEW</span></h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Signal</th><th>Connection</th></tr></thead>
+        <tbody>
+          <tr><td>5V</td><td>ESP32 <code>5V (VIN)</code> pin</td></tr>
+          <tr><td>GND</td><td>ESP32 <code>GND</code></td></tr>
+          <tr><td>DIN</td><td><strong>GPIO 4</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout tip"><span class="icon">✅</span> Only 1 LED — safe to power from VIN (~60 mA max at full white brightness).</div>
+
+    <h3>Complete Pin Summary</h3>
+    <div class="pin-summary">
+      <div class="pin-row"><span class="pin-num">GPIO  2</span><span class="pin-arrow">→</span><span class="pin-label">Servo PWM (Pen)</span></div>
+      <div class="pin-row"><span class="pin-num">GPIO  4</span><span class="pin-arrow">→</span><span class="pin-label">WS2812B LED DIN</span><span class="pin-new">NEW</span></div>
+      <div class="pin-row"><span class="pin-num">GPIO 12</span><span class="pin-arrow">→</span><span class="pin-label">Left Motor DIR</span></div>
+      <div class="pin-row"><span class="pin-num">GPIO 13</span><span class="pin-arrow">→</span><span class="pin-label">Left Motor STEP</span></div>
+      <div class="pin-row"><span class="pin-num">GPIO 14</span><span class="pin-arrow">→</span><span class="pin-label">Left Motor ENABLE</span></div>
+      <div class="pin-row"><span class="pin-num">GPIO 21</span><span class="pin-arrow">→</span><span class="pin-label">OLED SDA (I²C)</span></div>
+      <div class="pin-row"><span class="pin-num">GPIO 22</span><span class="pin-arrow">→</span><span class="pin-label">OLED SCL (I²C)</span></div>
+      <div class="pin-row"><span class="pin-num">GPIO 25</span><span class="pin-arrow">→</span><span class="pin-label">Right Motor ENABLE</span></div>
+      <div class="pin-row"><span class="pin-num">GPIO 26</span><span class="pin-arrow">→</span><span class="pin-label">Right Motor DIR</span></div>
+      <div class="pin-row"><span class="pin-num">GPIO 27</span><span class="pin-arrow">→</span><span class="pin-label">Right Motor STEP</span></div>
+      <div class="pin-row"><span class="pin-num">GPIO 32</span><span class="pin-arrow">→</span><span class="pin-label">Push Button (other leg → GND)</span><span class="pin-new">NEW</span></div>
+    </div>
+  </section>
+
+  <!-- 3. Wiring Diagram -->
+  <section id="s3">
+    <h2><span class="section-num">3</span> Wiring Diagram</h2>
+    <div class="wiring-box">                     +-------------------------+
+                     |          ESP32          |
+                     |                         |
+Left Stepper Driver -| GPIO 13 (STEP)          |
+                     | GPIO 12 (DIR)           |
+                     | GPIO 14 (ENABLE)        |
+                     |                         |
+Right Stepper Driver-| GPIO 27 (STEP)          |
+                     | GPIO 26 (DIR)           |
+                     | GPIO 25 (ENABLE)        |
+                     |                         |
+Servo (MG90S) -------| GPIO  2 (PWM)           |
+                     |                         |
+OLED SSD1306 --------| GPIO 21 (SDA)           |
+                     | GPIO 22 (SCL)           |
+                     |                         |
+WS2812B DIN ---------| GPIO  4           [NEW] |
+WS2812B 5V  ---------| 5V (VIN)          [NEW] |
+WS2812B GND ---------| GND               [NEW] |
+                     |                         |
+Button leg 1 --------| GPIO 32           [NEW] |
+Button leg 2 --------| GND               [NEW] |
+                     +-------------------------+</div>
+  </section>
+
+  <!-- 4. Flashing -->
+  <section id="s4">
+    <h2><span class="section-num">4</span> First-Time Setup: Flashing the Firmware</h2>
+    <p>Mural uses <a href="https://platformio.org/" target="_blank">PlatformIO</a> for building and flashing.</p>
+
+    <h3>Requirements</h3>
+    <ul>
+      <li><a href="https://code.visualstudio.com/" target="_blank">VS Code</a> with the PlatformIO extension, or PlatformIO CLI</li>
+      <li>USB cable connected to the ESP32</li>
+    </ul>
+
+    <h3>Steps</h3>
+    <ol>
+      <li>Open the project folder in VS Code.</li>
+      <li>Connect the ESP32 via USB.</li>
+      <li>Flash the firmware:
+        <pre><code>pio run --target upload</code></pre>
+      </li>
+      <li>Flash the web interface (LittleFS filesystem):
+        <pre><code>pio run --target uploadfs</code></pre>
+      </li>
+    </ol>
+    <div class="callout warning"><span class="icon">⚠️</span> The <code>uploadfs</code> step uploads web files from <code>data/www/</code> to the ESP32's flash. You must do this at least once, or the web interface will not load.</div>
+    <ol start="5">
+      <li>Open the Serial Monitor at baud rate <code>9600</code> to watch the boot log.</li>
+    </ol>
+  </section>
+
+  <!-- 5. Wi-Fi -->
+  <section id="s5">
+    <h2><span class="section-num">5</span> Connecting to Mural's Wi-Fi</h2>
+    <p>On first boot (or if Wi-Fi credentials are lost):</p>
+    <ol>
+      <li>Mural creates a Wi-Fi access point called <strong>Mural</strong>.</li>
+      <li>Connect to it from your phone or computer.</li>
+      <li>A captive portal opens automatically (or navigate to <code>192.168.4.1</code>).</li>
+      <li>Select your home Wi-Fi network and enter the password.</li>
+      <li>Click <strong>Save</strong>. Mural will restart and connect to your Wi-Fi.</li>
+    </ol>
+    <p>Once connected, the OLED display shows:</p>
+    <pre><code>http://192.168.x.x
+      or
+http://mural.local</code></pre>
+    <div class="callout tip"><span class="icon">💡</span> <code>http://mural.local</code> works on most modern devices without needing to look up the IP address. Android devices may require the IP instead.</div>
+  </section>
+
+  <!-- 6. Web Interface -->
+  <section id="s6">
+    <h2><span class="section-num">6</span> Using the Web Interface — Step by Step</h2>
+    <p>The web interface guides you through a series of <strong>phases</strong> in order. Each phase must be completed before moving to the next.</p>
+
+    <h3 class="phase-title">Phase 1 — Set Distance Between Hangers</h3>
+    <p><strong>What you see:</strong> A number input field asking for the distance between the two nails/hangers.</p>
+    <p><strong>What to do:</strong></p>
+    <ol>
+      <li>Measure the horizontal distance between the two nails on the wall, in <strong>millimeters</strong>.</li>
+      <li>Enter the value (e.g., <code>1000</code> for 1 meter).</li>
+      <li>Click <strong>Set distance</strong>.</li>
+    </ol>
+    <div class="callout warning"><span class="icon">⚠️</span> This value is critical for drawing accuracy. Measure carefully.</div>
+
+    <h3 class="phase-title">Phase 2 — Select SVG Image</h3>
+    <p><strong>What you see:</strong> A file picker and a preview area with pan/zoom controls.</p>
+    <p><strong>What to do:</strong></p>
+    <ol>
+      <li>Click the file input and select an SVG file from your computer.</li>
+      <li>Use the <strong>D-pad</strong> to pan and <strong>zoom</strong> buttons to resize.</li>
+      <li>Click <strong>Preview drawing</strong> to process the SVG.</li>
+    </ol>
+    <div class="callout info"><span class="icon">ℹ️</span> Use <strong>black and white line art SVGs</strong> for best results. Complex gradients and raster images are not supported.</div>
+
+    <h3 class="phase-title">Phase 3 — Choose Render Type</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Option</th><th>Best For</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Path Tracing</strong></td><td>Most drawings; follows SVG paths directly</td></tr>
+          <tr><td><strong>Vector → Raster → Vector</strong></td><td>Preserves stroke width and thickness</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="phase-title">Phase 4 — Drawing Preview &amp; Settings</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Setting</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Infill Density</strong></td><td>Adds hatching/fill inside shapes (0 = outlines only)</td></tr>
+          <tr><td><strong>Despeckle</strong></td><td>Removes small noise artifacts (higher = removes more tiny features)</td></tr>
+          <tr><td><strong>Flatten Paths</strong></td><td>Simplifies curves into straight line segments</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Adjust settings, then click <strong>Accept</strong> to upload to the ESP32.</p>
+
+    <h3 class="phase-title">Phase 5 — Retract Belts</h3>
+    <ol>
+      <li>Place the belt loops on the homing screws of the gondola.</li>
+      <li>Toggle <strong>Left motor</strong> ON to retract. Turn it <strong>OFF</strong> as soon as it stalls.</li>
+      <li>Repeat for <strong>Right motor</strong>.</li>
+      <li>Click <strong>Belts are retracted</strong>.</li>
+    </ol>
+    <div class="callout warning"><span class="icon">🔥</span> <strong>Warning:</strong> Do not leave motors stalling for long — this generates heat and can damage drivers.</div>
+
+    <h3 class="phase-title">Phase 6 — Extend Belts to Home Position</h3>
+    <ol>
+      <li>Make sure the gondola is free to move and belts are unobstructed.</li>
+      <li>Click <strong>Extend to home position</strong> and wait for the spinner to disappear.</li>
+    </ol>
+    <div class="callout info"><span class="icon">ℹ️</span> If motors skip steps here, drawing accuracy will be affected. Re-hang Mural and ensure belts run freely.</div>
+
+    <h3 class="phase-title">Phase 7 — Pen Calibration</h3>
+    <ol>
+      <li>Insert the pen so it's <strong>close to, but not touching</strong> the wall. Secure with the bolt.</li>
+      <li>Use the <strong>slider</strong> or <strong>+/−</strong> buttons to push the pen toward the wall.</li>
+      <li>When the pen tip <strong>just touches</strong> the wall, click <strong>Pen is touching the wall</strong>.</li>
+    </ol>
+
+    <h3 class="phase-title">Phase 8 — Begin Drawing</h3>
+    <p>Click <strong>Begin Drawing</strong> to start. The web server shuts down during drawing; the OLED shows progress (0%–100%). The ESP32 restarts automatically when done.</p>
+    <p>Click <strong>Reset</strong> to restart from Phase 1 without drawing.</p>
+  </section>
+
+  <!-- 7. SVG -->
+  <section id="s7">
+    <h2><span class="section-num">7</span> Preparing an SVG for Drawing</h2>
+    <ul>
+      <li><strong>Use line art only</strong> — outlines, not filled shapes with gradients.</li>
+      <li><strong>Black and white only</strong> — color information is ignored.</li>
+      <li><strong>Keep it simple</strong> — fewer, cleaner paths = better results and faster drawing.</li>
+      <li>The SVG is <strong>scaled to fit</strong> automatically:
+        <ul>
+          <li>Drawing area width = 60% of pin distance (e.g., 600 mm for 1000 mm pins)</li>
+          <li>20% margin on each side, 20% margin at the top</li>
+          <li>Height scaled proportionally</li>
+        </ul>
+      </li>
+    </ul>
+    <h3>Recommended Tools</h3>
+    <ul>
+      <li><a href="https://inkscape.org/" target="_blank">Inkscape</a> — free, open-source vector editor</li>
+      <li><a href="https://www.adobe.com/products/illustrator.html" target="_blank">Adobe Illustrator</a></li>
+      <li><a href="https://jakearchibald.github.io/svgomg/" target="_blank">SVGomg</a> — free online SVG optimizer</li>
+    </ul>
+  </section>
+
+  <!-- 8. Phases Reference -->
+  <section id="s8">
+    <h2><span class="section-num">8</span> Drawing Process Phases Reference</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Phase Name</th><th>What Happens</th></tr></thead>
+        <tbody>
+          <tr><td><code>SetTopDistance</code></td><td>User enters the distance between the two wall hangers</td></tr>
+          <tr><td><code>SvgSelect</code></td><td>User uploads and configures the SVG image</td></tr>
+          <tr><td><code>RetractBelts</code></td><td>User manually retracts both belts to their home stops</td></tr>
+          <tr><td><code>ExtendToHome</code></td><td>Motors automatically extend belts to the home position</td></tr>
+          <tr><td><code>PenCalibration</code></td><td>User sets the servo angle for the pen-down position</td></tr>
+          <tr><td><code>BeginDrawing</code></td><td>User starts the drawing or resets the whole process</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout info"><span class="icon">ℹ️</span> The system always starts at <strong>SetTopDistance</strong> on power-on or after reset.</div>
+  </section>
+
+  <!-- 9. Tools Modal -->
+  <section id="s9">
+    <h2><span class="section-num">9</span> Tools Modal (Advanced)</h2>
+    <p>Accessible via the <strong>⚙️ gear icon</strong> in the top-right corner (visible during the Set Distance phase).</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tool</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Left Motor slider</strong></td><td>Manually retract (−1) or extend (+1) the left belt</td></tr>
+          <tr><td><strong>Right Motor slider</strong></td><td>Manually retract (−1) or extend (+1) the right belt</td></tr>
+          <tr><td><strong>Park Servo</strong></td><td>Moves the servo to 90° (pen up / parked position)</td></tr>
+          <tr><td><strong>Extend 1000mm</strong></td><td>Extends belt by exactly 1000 mm — for E-steps calibration</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 10. E-Steps -->
+  <section id="s10">
+    <h2><span class="section-num">10</span> Calibration: E-Steps</h2>
+    <p>E-steps calibration ensures the motor moves the correct physical distance per step. Run this if drawings come out distorted or scaled incorrectly.</p>
+    <ol>
+      <li>Open the Tools Modal (gear icon).</li>
+      <li>Mark a reference point on the belt.</li>
+      <li>Click <strong>Extend 1000mm</strong>.</li>
+      <li>Measure the actual distance the belt moved.</li>
+      <li>Calculate the correction:
+        <pre><code>new_steps_per_rotation = current_steps_per_rotation × (1000 / measured_mm)</code></pre>
+      </li>
+      <li>Update <code>stepsPerRotation</code> in <code>src/movement.h</code> (currently <code>200 * 8 = 1600</code>).</li>
+      <li>Re-flash the firmware.</li>
+    </ol>
+
+    <h3>Current Geometry Constants</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Constant</th><th>Value</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>stepsPerRotation</code></td><td>1600</td><td>Steps per rotation (200 × 1/8 microstepping)</td></tr>
+          <tr><td><code>diameter</code></td><td>12.69 mm</td><td>Effective pulley diameter</td></tr>
+          <tr><td><code>d_t</code></td><td>76.027 mm</td><td>Distance between belt tangent points</td></tr>
+          <tr><td><code>HOME_Y_OFFSET_MM</code></td><td>350 mm</td><td>Y coordinate of home position in image space</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 11. Troubleshooting -->
+  <section id="s11">
+    <h2><span class="section-num">11</span> Tips &amp; Troubleshooting</h2>
+
+    <div class="trouble-item">
+      <h4>Mural is not reachable at http://mural.local</h4>
+      <ul>
+        <li>Try the IP address shown on the OLED display instead.</li>
+        <li>mDNS may not work on some Android devices — use the IP address directly.</li>
+      </ul>
+    </div>
+
+    <div class="trouble-item">
+      <h4>The drawing is skewed or inaccurate</h4>
+      <ul>
+        <li>Re-measure the pin distance and re-enter it exactly.</li>
+        <li>Check that neither belt skipped steps during "Extend to home".</li>
+        <li>Run E-steps calibration (Section 10).</li>
+      </ul>
+    </div>
+
+    <div class="trouble-item">
+      <h4>Motors stall immediately when retracting</h4>
+      <ul>
+        <li>The belts may already be fully retracted — toggle the motor off and click "Belts are retracted".</li>
+      </ul>
+    </div>
+
+    <div class="trouble-item">
+      <h4>OLED shows "SSD1306 allocation failed"</h4>
+      <ul>
+        <li>Check I²C wiring: SDA → GPIO 21, SCL → GPIO 22.</li>
+        <li>Verify the OLED's I²C address is <code>0x3C</code>.</li>
+      </ul>
+    </div>
+
+    <div class="trouble-item">
+      <h4>Web interface does not load (blank page or 404)</h4>
+      <ul>
+        <li>The LittleFS filesystem was not uploaded. Run:</li>
+      </ul>
+      <pre><code>pio run --target uploadfs</code></pre>
+    </div>
+
+    <div class="trouble-item">
+      <h4>Drawing starts but pen never touches the wall</h4>
+      <ul>
+        <li>Pen calibration was set incorrectly. Reset and redo Phase 7.</li>
+      </ul>
+    </div>
+
+    <div class="trouble-item">
+      <h4>ESP32 restarts after drawing is done</h4>
+      <ul>
+        <li>This is <strong>normal</strong>. The ESP32 restarts automatically after drawing completes so the web interface becomes accessible again.</li>
+      </ul>
+    </div>
+
+    <div class="trouble-item">
+      <h4>Want to connect to a different Wi-Fi network</h4>
+      <ul>
+        <li>Credentials are stored by WiFiManager. To reset them, erase the ESP32 flash and re-upload.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <p>Mural firmware built with PlatformIO · ESP32 Arduino framework · <a href="KinematicModel.md">Kinematic Model →</a></p>
+  </footer>
+
+</main>
+
+<script>
+  // Highlight active sidebar link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav#sidebar a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`nav#sidebar a[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
