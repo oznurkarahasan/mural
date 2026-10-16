@@ -89,11 +89,22 @@ function init() {
 
     $("#extendToHome").click(function() {
         $(this).prop( "disabled", true);
+        $("#alreadyAtHome").prop( "disabled", true);
         $("#extendingSpinner").css('visibility', 'visible');
         $.post("/extendToHome", {})
         .always(async function(res) {
             const extendToHomeTime = parseInt(res);
             await checkIfExtendedToHome(extendToHomeTime);
+        });
+    });
+
+    $("#alreadyAtHome").click(function() {
+        if (!confirm("Skip homing? Mural must already hang exactly at the home position, otherwise the drawing will be distorted.")) {
+            return;
+        }
+        doneWithPhase({
+            url: "/doneWithPhase",
+            commandName: "Already At Home",
         });
     });
     
@@ -522,6 +533,7 @@ function adaptToState(state) {
             $("#extendToHomeSlide").show();
             if (state.moving || state.startedHoming) {
                 $("#extendToHome").prop( "disabled", true);
+                $("#alreadyAtHome").prop( "disabled", true);
                 $("#extendingSpinner").css('visibility', 'visible');
                 checkIfExtendedToHome();
             }
